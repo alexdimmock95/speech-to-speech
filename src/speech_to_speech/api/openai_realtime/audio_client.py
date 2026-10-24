@@ -494,6 +494,8 @@ def handle_server_event(
         renderer.render_live_user_text(transcript.strip(), final=True)
         renderer.user_transcript_by_item.pop(item_id, None)
         renderer.user_snapshot_by_item.pop(item_id, None)
+        if not renderer.conversation_only:
+            print("ASSISTANT: <thinking>", flush=True)
     elif event.type == "conversation.item.input_audio_transcription.failed":
         renderer.clear_live_user_text()
         renderer.finish_live_assistant_text()

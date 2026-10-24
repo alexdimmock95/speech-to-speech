@@ -1812,3 +1812,22 @@ def test_voice_status_prints_lines_without_a_terminal(capsys):
     renderer = _FriendlyEventRenderer(conversation_only=False)
     renderer.show_status("Voice [2/38]: Zoey — selected")
     assert capsys.readouterr().out == "Voice [2/38]: Zoey — selected\n"
+
+
+def test_audio_client_prints_thinking_after_final_transcription(capsys):
+    playback = PlaybackBuffer(16000)
+    renderer = _FriendlyEventRenderer()
+
+    handle_server_event(
+        SimpleNamespace(
+            type="conversation.item.input_audio_transcription.completed",
+            item_id="item_1",
+            transcript="Hello there",
+        ),
+        playback=playback,
+        renderer=renderer,
+        print_json=False,
+    )
+
+    output = capsys.readouterr().out
+    assert "ASSISTANT: <thinking>" in output
